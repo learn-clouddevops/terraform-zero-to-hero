@@ -1,0 +1,42 @@
+---
+name: Terraform-Apply
+on:
+  push:
+    branches:
+      - main
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{secrets.AWS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_SECRET_ID}}
+      AWS_REGION: us-east-1
+  steps:
+    - name: Checkout
+      uses: actions/checkout@V2
+      
+    - name: Seturp Terraform
+      uses: hashicorp/setup-terraform@V1
+      
+    - name: Terraform Init
+      id: init
+      run: terraform init
+      
+    - name: Terraform Plan
+      id: plan
+      if: github.event_name == "push"
+      run: terraform plan -no-color
+      continue-on-error: true
+
+   - name: Terraform Plan Status
+      id: Plan
+      if: steps.plan.output == "failure"
+      run: exit 1 
+
+    - name: Terraform Plan Status
+      if: github.ref == "ref/heads/main" && gitthub.event_name == 'push'
+      run: terraform apply -auto-approve
+      
+
+      
