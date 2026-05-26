@@ -1,0 +1,21 @@
+name: Env vs Secrets Demo
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # 🔥 THIS ENABLES ENVIRONMENT LEVEL SECRETS/VARs
+    environment: production
+
+    steps:
+      - name: Show repo variables
+        run: |
+          echo "Repo APP_NAME: ${{ vars.APP_NAME }}"
+          echo "Repo SECRET (masked): ${{ secrets.API_KEY }}"
+
+      - name: Show environment variables
+        run: |
+          echo "Env APP_NAME: ${{ vars.APP_NAME }}"
+          echo "Env SECRET (masked): ${{ secrets.API_KEY }}"
